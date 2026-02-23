@@ -22,9 +22,19 @@ pipeline {
                 }
             }
             steps {
-                echo 'Build the images if the dockerFile exits'
+                echo 'Build the Docker image'
                 sh '''
+                    # Start the Docker daemon in the background
+                    dockerd-entrypoint.sh &
+
+                    # Wait a few seconds for the daemon to be ready
+                    sleep 5
+
+                    # Verify Docker is running
                     docker --version
+                    docker info
+
+                    # Build the image
                     docker build -t $IMAGE_TAG:$IMAGE_VERSION ./project1
                 '''
             }
