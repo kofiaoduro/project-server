@@ -26,7 +26,7 @@ pipeline {
                 echo 'Build the images if the dockerFile exits'
                 sh '''
                     docker --version
-                    docker build -t $IMAGE_TAG:$IMAGE_VERSION ./project1/Dockerfile
+                    docker build -t $IMAGE_TAG:$IMAGE_VERSION ./project1
                 '''
             }
         }
