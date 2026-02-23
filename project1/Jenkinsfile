@@ -15,10 +15,6 @@ pipeline {
             }
         }
         stage('Build') {
-            agent any
-            environment {
-                DOCKER_HOST = 'tcp://172.17.0.2:2375'
-            }
             steps {
                 sh '''
                     docker --version
