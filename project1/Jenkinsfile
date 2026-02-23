@@ -15,26 +15,13 @@ pipeline {
             }
         }
         stage('Build') {
-            agent {
-                docker {
-                    image 'docker:20.10-dind'
-                    args '--privileged'
-                }
+            agent any
+            environment {
+                DOCKER_HOST = 'tcp://jenkins-docker:2375'
             }
             steps {
-                echo 'Build the Docker image'
                 sh '''
-                    # Start the Docker daemon in the background
-                    dockerd-entrypoint.sh &
-
-                    # Wait a few seconds for the daemon to be ready
-                    sleep 5
-
-                    # Verify Docker is running
                     docker --version
-                    docker info
-
-                    # Build the image
                     docker build -t $IMAGE_TAG:$IMAGE_VERSION ./project1
                 '''
             }
