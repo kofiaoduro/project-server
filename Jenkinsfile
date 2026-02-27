@@ -46,9 +46,9 @@ pipeline {
                     passwordVariable: 'DOCKER_PASSWORD', 
                     usernameVariable: 'DOCKER_USER')]) {
                     
+                    sh ' Docker login -u $DOCKER_USER -p $DOCKER_PASSWORD'
+                    
                  }
-
-                 sh ' Docker login -u $DOCKER_USER -p $DOCKER_PASSWORD'
             }
         }
     }
