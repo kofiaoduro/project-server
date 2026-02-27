@@ -6,6 +6,11 @@ pipeline {
         }
     }
 
+    environment {
+        IMAGE_NAME = 'koduro/backend'
+        IMAGE_TAG = 'latest'
+    }
+
     stages {
         stage('Docker Test') {
             steps {
@@ -22,6 +27,9 @@ pipeline {
         stage('Docker build') {
             steps{
                 echo 'We are building the image'
+                sh '''
+                    docker build -t $IMAGE_NAME:$IMAGE_TAG project1/Dockerfile
+                '''
             }
         }
     }
