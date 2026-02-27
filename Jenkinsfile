@@ -14,7 +14,14 @@ pipeline {
                     docker --version
                     docker ps
                     ls -la
+                    # check to see if your docker file exits
+                    test -f project1/Dockerfile
                 '''
+            }
+        }
+        stage('Docker build') {
+            steps{
+                echo 'We are building the image'
             }
         }
     }
