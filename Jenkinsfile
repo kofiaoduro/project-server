@@ -28,7 +28,7 @@ pipeline {
             steps{
                 echo 'We are building the image'
                 sh '''
-                    docker build -t $IMAGE_NAME:$IMAGE_TAG -f project1
+                    docker build -t $IMAGE_NAME:$IMAGE_TAG  project1
                 '''
             }
         }
