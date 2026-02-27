@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker:25.0'                     // This container has Docker CLI
+            image 'docker:25.0'
             args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
         }
     }
@@ -15,40 +15,40 @@ pipeline {
         stage('Docker Test') {
             steps {
                 sh '''
-                    ls -la
                     docker --version
                     docker ps
-                    ls -la
-                    # check to see if your docker file exits
                     test -f project1/Dockerfile
                 '''
             }
         }
-        stage('Docker build') {
-            steps{
-                echo 'We are building the image'
-                sh '''
-                    docker build -t $IMAGE_NAME:$IMAGE_TAG  project1
-                '''
-            }
-        }
-        stage('Docker Test Image') {
+
+        stage('Docker Build') {
             steps {
-                sh '''
-                    docker inspect $IMAGE_NAME:$IMAGE_TAG > /dev/null 2>&1
-                '''
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG project1'
             }
         }
+
+        stage('Verify Image') {
+            steps {
+                sh 'docker inspect $IMAGE_NAME:$IMAGE_TAG > /dev/null 2>&1'
+            }
+        }
+
         stage('Docker Login') {
             steps {
-                 withCredentials([usernamePassword(
-                    credentialsId: 'docker_hub', 
-                    passwordVariable: 'DOCKER_PASSWORD', 
-                    usernameVariable: 'DOCKER_USER')]) {
-                    
-                    sh ' docker login -u $DOCKER_USER -p $DOCKER_PASSWORD'
-                    
-                 }
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker_hub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
+                    sh 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin'
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
             }
         }
     }
