@@ -32,5 +32,24 @@ pipeline {
                 '''
             }
         }
+        stage('Docker Test Image') {
+            steps {
+                sh '''
+                    docker inspect $IMAGE_NAME:$IMAGE_TAG > /dev/null 2>&1
+                '''
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                 withCredentials([usernamePassword(
+                    credentialsId: 'docker_hub', 
+                    passwordVariable: 'DOCKER_PASSWORD', 
+                    usernameVariable: 'DOCKER_USER')]) {
+                    
+                 }
+
+                 sh ' Docker login -u $DOCKER_USER -p $DOCKER_PASSWORD'
+            }
+        }
     }
 }
